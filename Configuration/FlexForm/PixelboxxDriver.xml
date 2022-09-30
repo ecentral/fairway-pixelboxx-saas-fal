@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<T3DataStructure>
+    <ROOT>
+        <type>array</type>
+        <el>
+            <userName>
+                <TCEforms>
+                    <label>LLL:EXT:pixelboxx_saas_fal/Resources/Private/Language/locallang_be.xlf:sys_file_storage.pixelboxxDriverFlexform_userName</label>
+                    <config>
+                        <type>input</type>
+                        <eval>required,trim</eval>
+                        <size>60</size>
+                    </config>
+                </TCEforms>
+            </userName>
+            <userPassword>
+                <TCEforms>
+                    <label>LLL:EXT:pixelboxx_saas_fal/Resources/Private/Language/locallang_be.xlf:sys_file_storage.pixelboxxDriverFlexform_userPassword</label>
+                    <config>
+                        <type>input</type>
+                        <eval>required,trim</eval>
+                        <size>60</size>
+                        <eval>password</eval>
+                    </config>
+                </TCEforms>
+            </userPassword>
+            <pixelboxxDomain>
+                <TCEforms>
+                    <label>pixelboxx_saas_fal/Resources/Private/Language/locallang_be.xlf:sys_file_storage.pixelboxxDriverFlexform_pixelboxxDomain</label>
+                    <config>
+                        <type>input</type>
+                        <eval>required,trim</eval>
+                        <size>60</size>
+                    </config>
+                </TCEforms>
+            </pixelboxxDomain>
+        </el>
+    </ROOT>
+</T3DataStructure>

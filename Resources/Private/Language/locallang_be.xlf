@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" original="EXT:pixelboxx_saas_fal/Resources/Private/Language/locallang_be.xlf" date="2021-07-22T06:52:24Z" product-name="lang">
+		<header/>
+		<body>
+			<trans-unit id="sys_file_storage.pixelboxxDriverFlexform_appId" resname="sys_file_storage.pixelboxxDriverFlexform_userName">
+				<source>Username</source>
+			</trans-unit>
+			<trans-unit id="sys_file_storage.pixelboxxDriverFlexform_appSecret" resname="sys_file_storage.pixelboxxDriverFlexform_userPassword">
+				<source>Password</source>
+			</trans-unit>
+			<trans-unit id="sys_file_storage.pixelboxxDriverFlexform_cantoName" resname="sys_file_storage.pixelboxxDriverFlexform_pixelboxxDomain">
+				<source>Domain</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

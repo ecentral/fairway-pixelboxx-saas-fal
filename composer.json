@@ -1,0 +1,81 @@
+{
+  "name": "fairway/pixelboxx-saas-fal",
+  "type": "typo3-cms-extension",
+  "description": "Adds Pixelboxx SaaS FAL driver.",
+  "homepage": "https://gitlab.ecentral.de/fairway/pixelboxx-saas-fal",
+  "license": "GPL-2.0-or-later",
+  "keywords": [
+    "TYPO3 CMS",
+    "Pixelboxx",
+    "DAM",
+    "FAL"
+  ],
+  "authors": [
+    {
+      "name": "Christian Rodriguez Benthake",
+      "role": "Developer",
+      "email": "c.rodriguez.benthake@ecentral.de"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://composer.typo3.org/"
+    },
+    {
+      "type": "path",
+      "url": "../fairway-api/"
+    },
+    {
+      "type": "path",
+      "url": "../fairway-pixelbox-saas-api/"
+    }
+  ],
+  "require": {
+    "php": "^7.4 || ^8.0",
+    "ext-json": "*",
+    "typo3/cms-core": "^10.4.32 || ^11.5",
+    "typo3/cms-filemetadata": "^10.4.32 || ^11.5",
+    "typo3/cms-filelist": "^10.4.32 || ^11.5",
+    "guzzlehttp/guzzle": "^6.3 || ^7.3",
+    "psr/log": "^1.1",
+    "fairway/fairway-filesystem-api": "dev-main"
+  },
+  "autoload": {
+    "psr-4": {
+      "Fairway\\PixelboxxSaasFal\\": "Classes"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Fairway\\PixelboxxSaasFal\\Tests\\": "Tests"
+    }
+  },
+  "replace": {
+    "typo3-ter/pixelboxx-saas-fal": "self.version"
+  },
+  "config": {
+    "vendor-dir": ".Build/vendor",
+    "bin-dir": ".Build/bin",
+    "allow-plugins": {
+      "typo3/class-alias-loader": true,
+      "typo3/cms-composer-installers": true
+    }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "mkdir -p .Build/Web/typo3conf/ext/",
+      "[ -L .Build/Web/typo3conf/ext/pixelboxx_saas_fal ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/pixelboxx_saas_fal"
+    ],
+    "phpcsfixer": "php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --dry-run --using-cache=no --diff",
+    "phpcsfixer:fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --using-cache=no --diff",
+    "phpstan": "phpstan analyse -c phpstan.neon"
+  },
+  "extra": {
+    "typo3/cms": {
+      "web-dir": ".Build/Web",
+      "extension-key": "pixelboxx_saas_fal"
+    }
+  },
+  "minimum-stability": "dev"
+}
