@@ -10,10 +10,12 @@ use Fairway\FairwayFilesystemApi\FileType;
 use Fairway\PixelboxxSaasApi\Client;
 use Fairway\PixelboxxSaasApi\PixelboxxResourceName;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
 use TYPO3\CMS\Core\Resource\Driver\StreamableDriverInterface;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\Exception\NotImplementedMethodException;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements StreamableDriverInterface
 {
@@ -40,10 +42,11 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
     public function initialize()
     {
         if ($this->driver === null && $this->validConfiguration === true) {
-            $this->driver = new Driver(
-                Client::createWithDomain($this->configuration['pixelboxxDomain'])
-                    ->authenticate($this->configuration['userName'], $this->configuration['userPassword'])
-            );
+            $client = Client::createWithDomain($this->configuration['pixelboxxDomain'])
+                ->authenticate($this->configuration['userName'], $this->configuration['userPassword']);
+            $this->driver = new Driver($client);
+//            $registry = GeneralUtility::makeInstance(Registry::class);
+//            $registry->set('pixelboxxSaasFal', 'access_token', $client->getAccessToken());
         }
     }
 

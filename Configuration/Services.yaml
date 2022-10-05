@@ -1,0 +1,9 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Fairway\PixelboxxSaasFal\Browser\PixelboxxAssetBrowser:
+    public: true
+    shared: false

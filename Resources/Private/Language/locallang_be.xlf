@@ -12,6 +12,9 @@
 			<trans-unit id="sys_file_storage.pixelboxxDriverFlexform_cantoName" resname="sys_file_storage.pixelboxxDriverFlexform_pixelboxxDomain">
 				<source>Domain</source>
 			</trans-unit>
+			<trans-unit id="pixelboxx_asset_browser.title" resname="pixelboxx_asset_browser.title">
+				<source>Pixelboxx Asset Picker</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
