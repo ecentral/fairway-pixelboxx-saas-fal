@@ -51,7 +51,13 @@ final class PixelboxxAssetBrowser extends AbstractElementBrowser implements Elem
         return [
             'data-mode' => 'pixelboxx',
             'data-storage-uid' => (string)$this->storage->getUid(),
+            'data-asset-picker-domain' => $this->getAssetPickerDomain(),
         ];
+    }
+
+    public function getAssetPickerDomain(): string
+    {
+        return 'ecentral.demo.pixelboxx.io';
     }
 
 
@@ -67,6 +73,7 @@ final class PixelboxxAssetBrowser extends AbstractElementBrowser implements Elem
         $this->moduleTemplate->getView()->setTemplate('Search');
         $this->moduleTemplate->getView()->assignMultiple([
             'storage' => $this->storage,
+            'assetPickerDomain' => $this->getAssetPickerDomain(),
         ]);
         return $this->moduleTemplate->renderContent();
     }

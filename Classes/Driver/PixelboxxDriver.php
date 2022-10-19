@@ -10,6 +10,8 @@ use Fairway\FairwayFilesystemApi\FileType;
 use Fairway\PixelboxxSaasApi\Client;
 use Fairway\PixelboxxSaasApi\PixelboxxResourceName;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Http\FalDumpFileContentsDecoratorStream;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
 use TYPO3\CMS\Core\Resource\Driver\StreamableDriverInterface;
@@ -66,9 +68,9 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         return $this->getRootLevelFolder();
     }
 
-    public function getPublicUrl($identifier)
+    public function getPublicUrl($identifier): string
     {
-        throw new NotImplementedMethodException();
+        return $this->driver->getPublicUrl($identifier);
     }
 
     public function createFolder($newFolderName, $parentFolderIdentifier = '', $recursive = false)
@@ -218,6 +220,8 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
             'ctime' => $asset->getCTime(),
             'hash' => $this->hash($prn, 'md5'),
             'extension' => $asset->getExtension(),
+            'mimetype' => $asset->getMimeType(),
+            'size' => $asset->getSize(),
             'folder_hash' => $this->hash($combinedDirectoryIdentifier, 'md5'),
             'storage' => $this->storageUid
         ];
@@ -294,7 +298,21 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
 
     public function streamFile(string $identifier, array $properties): ResponseInterface
     {
-        throw new NotImplementedMethodException();
+        $fileInfo = $this->getFileInfoByIdentifier($identifier, ['name', 'mimetype', 'mtime', 'size']);
+        $downloadName = $properties['filename_overwrite'] ?? $fileInfo['name'] ?? '';
+        $mimeType = $properties['mimetype_overwrite'] ?? $fileInfo['mimetype'] ?? '';
+        $contentDisposition = ($properties['as_download'] ?? false) ? 'attachment' : 'inline';
+        return new Response(
+            new FalDumpFileContentsDecoratorStream($identifier, $this, (int)$fileInfo['size']),
+            200,
+            [
+                'Content-Disposition' => $contentDisposition . '; filename="' . $downloadName . '"',
+                'Content-Type' => $mimeType,
+                'Content-Length' => (string)$fileInfo['size'],
+                'Last-Modified' => gmdate('D, d M Y H:i:s', $fileInfo['mtime']) . ' GMT',
+                'Cache-Control' => '',
+            ]
+        );
     }
 
     private function getIdentifier(string $identifier, string $fileType): ?string
