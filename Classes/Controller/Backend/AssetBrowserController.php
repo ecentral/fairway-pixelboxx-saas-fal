@@ -36,7 +36,7 @@ final class AssetBrowserController
     public function importFile(ServerRequestInterface $request): ResponseInterface
     {
         $data = json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
-        $storage = $this->getCantoStorageByUid(2);
+        $storage = $this->getStorageByUid(2);
         if (is_array($data) && count($data) === 1) {
             $asset = Asset::createFromArray($data[0]);
             $file = $storage->getFile((string)$asset->getId());
@@ -50,11 +50,11 @@ final class AssetBrowserController
         return new Response(null, 400);
     }
 
-    protected function getCantoStorageByUid(int $uid): ResourceStorage
+    protected function getStorageByUid(int $uid): ResourceStorage
     {
         $storage = $this->storageRepository->findByUid($uid);
         if ($storage === null || $storage->getDriverType() !== PixelboxxDriver::DRIVER_NAME) {
-            throw new \Exception('The given storage is not a canto storage.', 1628166504);
+            throw new \Exception('The given storage is not a pixelboxx storage.', 1628166504);
         }
         return $storage;
     }

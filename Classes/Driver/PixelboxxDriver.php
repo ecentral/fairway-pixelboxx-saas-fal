@@ -391,7 +391,14 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
     {
         $identifier = $this->getIdentifier($folderIdentifier, FileType::DIRECTORY);
         if ($identifier === null) {
-            throw new \Exception(sprintf('Identifier %s not found', $folderIdentifier));
+            // root folder
+            return [
+                'identifier' => $folderIdentifier,
+                'name' => 'root',
+                'mtime' => time(),
+                'ctime' => time(),
+                'storage' => $this->storageUid
+            ];
         }
         $directory = $this->getDriver()->getDirectory($identifier);
         if ($directory === null) {
