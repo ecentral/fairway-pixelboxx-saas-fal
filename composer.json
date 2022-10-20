@@ -1,0 +1,72 @@
+{
+  "name": "fairway/pixelboxx-saas-fal",
+  "type": "typo3-cms-extension",
+  "description": "Adds Pixelboxx SaaS FAL driver.",
+  "homepage": "https://github.com/ecentral/fairway-pixelboxx-saas-fal",
+  "license": "GPL-2.0-or-later",
+  "keywords": [
+    "TYPO3 CMS",
+    "Pixelboxx",
+    "DAM",
+    "FAL"
+  ],
+  "authors": [
+    {
+      "name": "Christian Rodriguez Benthake",
+      "role": "Developer",
+      "email": "c.rodriguez.benthake@ecentral.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4 || ^8.0",
+    "ext-json": "*",
+    "typo3/cms-backend": "^10.4.32 || ^11.5",
+    "typo3/cms-core": "^10.4.32 || ^11.5",
+    "typo3/cms-recordlist": "^10.4.32 || ^11.5",
+    "typo3/cms-filemetadata": "^10.4.32 || ^11.5",
+    "typo3/cms-filelist": "^10.4.32 || ^11.5",
+    "guzzlehttp/guzzle": "^6.3 || ^7.3",
+    "psr/log": "^1.1",
+    "fairway/filesystem-api": "^0.1.0"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.8.0",
+    "phpro/grumphp": "^v1.10",
+    "friendsofphp/php-cs-fixer": "^v3.12"
+  },
+  "autoload": {
+    "psr-4": {
+      "Fairway\\PixelboxxSaasFal\\": "Classes"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Fairway\\PixelboxxSaasFal\\Tests\\": "Tests"
+    }
+  },
+  "replace": {
+    "typo3-ter/pixelboxx-saas-fal": "self.version"
+  },
+  "config": {
+    "vendor-dir": ".Build/vendor",
+    "bin-dir": ".Build/bin",
+    "allow-plugins": {
+      "typo3/class-alias-loader": true,
+      "typo3/cms-composer-installers": true,
+      "phpro/grumphp": true
+    }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "mkdir -p .Build/Web/typo3conf/ext/",
+      "[ -L .Build/Web/typo3conf/ext/pixelboxx_saas_fal ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/pixelboxx_saas_fal"
+    ],
+    "phpstan": "phpstan analyse -c phpstan.neon"
+  },
+  "extra": {
+    "typo3/cms": {
+      "web-dir": ".Build/Web",
+      "extension-key": "pixelboxx_saas_fal"
+    }
+  }
+}

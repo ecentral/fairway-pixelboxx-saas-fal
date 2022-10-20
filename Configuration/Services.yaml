@@ -1,0 +1,18 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Fairway\PixelboxxSaasFal\Browser\PixelboxxAssetBrowser:
+    public: true
+    shared: false
+
+  Fairway\PixelboxxSaasFal\Controller\:
+    resource: '../Classes/Controller/*'
+
+  Fairway\PixelboxxSaasFal\Listener\BeforeFileProcessingEventListener:
+    tags:
+      - name: event.listener
+        identifier: pixelboxxProcessingFileEnricher
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFileProcessingEvent
