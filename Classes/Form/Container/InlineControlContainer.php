@@ -16,6 +16,10 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 
 final class InlineControlContainer extends Typo3InlineControlContainer
 {
+    /**
+     * @param array<string, mixed> $inlineConfiguration
+     * @return string
+     */
     protected function renderPossibleRecordsSelectorTypeGroupDB(array $inlineConfiguration): string
     {
         $buttons = parent::renderPossibleRecordsSelectorTypeGroupDB($inlineConfiguration);
@@ -28,6 +32,11 @@ final class InlineControlContainer extends Typo3InlineControlContainer
         return $buttons;
     }
 
+    /**
+     * @param array<string, mixed> $inlineConfiguration
+     * @param int $storageId
+     * @return string
+     */
     private function renderPixelboxxAssetPickerButton(array $inlineConfiguration, int $storageId): string
     {
         $buttonStyle = '';
@@ -63,8 +72,8 @@ HTML;
 
     private function appendButton(string $origHtml, string $buttonHtml): string
     {
-        $inlineControlsPosition = strpos($origHtml, 't3js-inline-controls');
-        $inlineControlsClosingTagPosition = strpos($origHtml, '</div>', $inlineControlsPosition);
+        $inlineControlsPosition = strpos($origHtml, 't3js-inline-controls') ?: 0;
+        $inlineControlsClosingTagPosition = strpos($origHtml, '</div>', $inlineControlsPosition) ?: 0;
         return substr_replace($origHtml, $buttonHtml, $inlineControlsClosingTagPosition, 0);
     }
 

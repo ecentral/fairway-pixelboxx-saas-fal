@@ -17,7 +17,7 @@ use TYPO3\CMS\Core\Resource\ProcessedFile;
 
 final class BeforeFileProcessingEventListener
 {
-    public function __invoke(BeforeFileProcessingEvent $event)
+    public function __invoke(BeforeFileProcessingEvent $event): void
     {
         if (!($event->getDriver() instanceof PixelboxxDriver)) {
             return;
