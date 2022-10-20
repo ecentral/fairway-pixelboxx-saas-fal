@@ -22,6 +22,9 @@ define([
     onIframeMessage(event) {
       if (event.origin === `https://${this.assetPickerDomain}`) {
         return (new AjaxRequest(TYPO3.settings.ajaxUrls.import_from_asset_builder))
+          .withQueryArguments({
+            storageUid: this.storageUid
+          })
           .post({}, {
             body: event.data
           })

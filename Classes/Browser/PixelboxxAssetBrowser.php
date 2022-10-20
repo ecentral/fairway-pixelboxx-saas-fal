@@ -45,7 +45,7 @@ final class PixelboxxAssetBrowser extends AbstractElementBrowser implements Elem
         $this->initializeStorage();
 
         $this->pageRenderer->addCssFile(
-            'EXT:canto_saas_fal/Resources/Public/Css/CantoAssetBrowser.css'
+            'EXT:pixelboxx_saas_fal/Resources/Public/Css/PixelboxxAssetBrowser.css'
         );
         $this->pageRenderer->loadRequireJsModule(
             'TYPO3/CMS/PixelboxxSaasFal/PixelboxxAssetPicker'
@@ -75,7 +75,7 @@ final class PixelboxxAssetBrowser extends AbstractElementBrowser implements Elem
         $this->setBodyTagParameters();
         $this->moduleTemplate->setTitle(
             $this->getLanguageService()->sL(
-                'LLL:EXT:canto_saas_fal/Resources/Private/Language/locallang_be.xlf:pixelboxx_asset_browser.title'
+                'LLL:EXT:pixelboxx_saas_fal/Resources/Private/Language/locallang_be.xlf:pixelboxx_asset_browser.title'
             )
         );
 

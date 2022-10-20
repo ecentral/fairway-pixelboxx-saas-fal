@@ -14,6 +14,16 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['registeredDrivers'][\Fairway\Pixelbox
     'label' => 'Pixelboxx DAM',
 ];
 
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['processors']['PixelboxxFileProcessor'] = [
+    'className' => \Fairway\PixelboxxSaasFal\Processing\PixelboxxFileProcessor::class,
+    'before' => [
+        'SvgImageProcessor'
+    ]
+];
+
+\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Index\ExtractorRegistry::class)
+    ->registerExtractionService(\Fairway\PixelboxxSaasFal\Extractor\PixelboxxFileExtractor::class);
+
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1628070217] = [
     'nodeName' => 'inline',
     'priority' => 100,
