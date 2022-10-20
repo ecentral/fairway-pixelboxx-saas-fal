@@ -25,12 +25,14 @@
     "typo3/cms-recordlist": "^10.4.32 || ^11.5",
     "typo3/cms-filemetadata": "^10.4.32 || ^11.5",
     "typo3/cms-filelist": "^10.4.32 || ^11.5",
+    "typo3/cms-fluid": "^10.4.32 || ^11.5",
     "guzzlehttp/guzzle": "^6.3 || ^7.3",
     "psr/log": "^1.1",
     "fairway/filesystem-api": "^0.1.0"
   },
   "require-dev": {
     "phpstan/phpstan": "^1.8.0",
+    "saschaegerer/phpstan-typo3": "^1.8.0",
     "phpro/grumphp": "^v1.10",
     "friendsofphp/php-cs-fixer": "^v3.12"
   },

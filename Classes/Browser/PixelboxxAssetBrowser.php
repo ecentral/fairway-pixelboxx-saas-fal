@@ -38,7 +38,7 @@ final class PixelboxxAssetBrowser extends AbstractElementBrowser implements Elem
         parent::__construct($iconFactory, $pageRenderer, $uriBuilder, $moduleTemplateFactory);
     }
 
-    protected function initialize()
+    protected function initialize(): void
     {
         parent::initialize();
         $this->initializeView();
@@ -101,6 +101,10 @@ final class PixelboxxAssetBrowser extends AbstractElementBrowser implements Elem
         return $this->thisScript;
     }
 
+    /**
+     * @param array<string, mixed> $values
+     * @return array<string, string>
+     */
     public function getUrlParameters(array $values): array
     {
         return [
@@ -109,6 +113,10 @@ final class PixelboxxAssetBrowser extends AbstractElementBrowser implements Elem
         ];
     }
 
+    /**
+     * @param mixed[] $values
+     * @return bool
+     */
     public function isCurrentlySelectedItem(array $values): bool
     {
         return false;

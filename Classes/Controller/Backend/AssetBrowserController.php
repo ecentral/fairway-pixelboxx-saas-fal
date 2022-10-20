@@ -17,7 +17,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\Response;
-use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -28,7 +28,9 @@ final class AssetBrowserController
 
     public function __construct()
     {
-        $this->storageRepository = GeneralUtility::makeInstance(StorageRepository::class);
+        $storage = GeneralUtility::makeInstance(StorageRepository::class);
+        assert($storage instanceof StorageRepository);
+        $this->storageRepository = $storage;
     }
 
     public function importFile(ServerRequestInterface $request): ResponseInterface
@@ -38,7 +40,7 @@ final class AssetBrowserController
         if (is_array($data) && count($data) === 1) {
             $asset = Asset::createFromArray($data[0]);
             $file = $storage->getFile((string)$asset->getId());
-            if ($file instanceof FileInterface) {
+            if ($file instanceof AbstractFile) {
                 return new JsonResponse([
                     'fileUid' => $file->getUid(),
                     'fileName' => $file->getName(),
