@@ -35,8 +35,9 @@ final class AssetBrowserController
 
     public function importFile(ServerRequestInterface $request): ResponseInterface
     {
-        $data = json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
-        $storage = $this->getStorageByUid(2);
+        $data = json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);#
+        $storageUid = (int)$request->getQueryParams()['storageUid'];
+        $storage = $this->getStorageByUid($storageUid);
         if (is_array($data) && count($data) === 1) {
             $asset = Asset::createFromArray($data[0]);
             $file = $storage->getFile((string)$asset->getId());
