@@ -69,7 +69,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
 
     public function getRootLevelFolder(): string
     {
-        return '';
+        return '/';
     }
 
     public function getDefaultFolder(): string
@@ -323,7 +323,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         // todo: replace with thumbnail content, its not necessary to work on full orig. file
         $file = $this->getDriver()->read($identifier);
         if ($tempFileWriteStream === false) {
-            throw new \Exception('Unable to open temporary file');
+            throw new \Exception(sprintf('Unable to open temporary file %s', $temporaryPath));
         }
         fwrite($tempFileWriteStream, $file);
         fclose($tempFileWriteStream);
@@ -374,7 +374,11 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
     public function getFileInfoByIdentifier($fileIdentifier, array $propertiesToExtract = []): array
     {
         try {
-            $prn = (string)(new PixelboxxResourceName($fileIdentifier));
+            if (str_starts_with($fileIdentifier, 'prn')) {
+                $prn = (string)(new PixelboxxResourceName($fileIdentifier));
+            } else {
+                $prn = $this->getIdentifier($fileIdentifier, FileType::FILE);
+            }
         } catch (\Exception $exception) {
             $prn = $this->getIdentifier($fileIdentifier, FileType::FILE);
         }
@@ -386,13 +390,16 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
             fn (Directory $directory) => $directory->getIdentifier(),
             $asset->getParentOfIdentifier()->toArray()
         ));
+        $extension = array_reverse(explode('.', $asset->getFileName()))[0];
+        $id = (new PixelboxxResourceName($prn))->getResourceId() ?? $asset->getIdentifier();
         return [
-            'identifier' => $asset->getIdentifier(),
+            'identifier' => $id,
             'name' => $asset->getFileName(),
             'mtime' => $asset->getMTime(),
             'ctime' => $asset->getCTime(),
-            'hash' => $this->hash($prn, 'md5'),
-            'extension' => $asset->getExtension(),
+            'hash' => $this->hash($id, 'md5'),
+            'identifier_hash' => $this->hash($id, 'md5'),
+            'extension' => $extension,
             'mimetype' => $asset->getMimeType(),
             'size' => $asset->getSize(),
             'folder_hash' => $this->hash($combinedDirectoryIdentifier, 'md5'),
@@ -410,7 +417,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         if ($identifier === null) {
             // root folder
             return [
-                'identifier' => $folderIdentifier,
+                'identifier' => '/',
                 'name' => 'root',
                 'mtime' => time(),
                 'ctime' => time(),
@@ -466,7 +473,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         }
         $assets = [];
         foreach ($folderWithAssets->getFolder()->getAssets() as $asset) {
-            $assets[] = (string)$asset->getId();
+            $assets[] = $asset->getId()->getResourceId() ?? ((string)$asset->getId());
         }
         return $assets;
     }
@@ -565,7 +572,9 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
     private function getIdentifier(string $identifier, string $fileType): ?string
     {
         try {
-            return (string)(new PixelboxxResourceName($identifier));
+            if (str_starts_with($identifier, 'prn')) {
+                return (string)(new PixelboxxResourceName($identifier));
+            }
         } catch (\Exception $exception) {
         }
         $newIdentifier = trim($identifier, '/');

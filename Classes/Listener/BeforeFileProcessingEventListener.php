@@ -13,7 +13,6 @@ namespace Fairway\PixelboxxSaasFal\Listener;
 
 use Fairway\PixelboxxSaasFal\Driver\PixelboxxDriver;
 use TYPO3\CMS\Core\Resource\Event\BeforeFileProcessingEvent;
-use TYPO3\CMS\Core\Resource\ProcessedFile;
 
 final class BeforeFileProcessingEventListener
 {
@@ -24,24 +23,16 @@ final class BeforeFileProcessingEventListener
         }
 
         $processedFile = $event->getProcessedFile();
-//        if (in_array($event->getTaskType(), [
-//            ProcessedFile::CONTEXT_IMAGECROPSCALEMASK,
-//        ], true)) {
-//            $processedFile->setUsesOriginalFile();
-//            $event->setProcessedFile($processedFile);
-//            return;
-//        }
-
         $configuration = $event->getConfiguration();
-//        $properties['processing_url'] = $event->getDriver()->getPublicUrl($processedFile->getIdentifier());
-//        if (!isset($configuration['width'], $configuration['height'])) {
-//            [$width, $height] = getimagesize($properties['processing_url']);
-//            $configuration['width'] = $width;
-//            $configuration['height'] = $height;
-//        }
         $processedFile->setUsesOriginalFile();
         $properties['width'] = $configuration['width'];
         $properties['height'] = $configuration['height'];
+        if (isset($configuration['maxHeight']) && $configuration['maxHeight'] > $configuration['height']) {
+            $properties['height'] = $configuration['maxHeight'];
+        }
+        if (isset($configuration['maxHeight']) && $configuration['maxHeight'] > $configuration['width']) {
+            $properties['width'] = $configuration['maxHeight'];
+        }
         $processedFile->updateProperties($properties);
         $event->setProcessedFile($processedFile);
     }
