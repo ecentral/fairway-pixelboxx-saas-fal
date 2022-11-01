@@ -172,9 +172,9 @@ final class MetadataManager
             $errorMessages = $messages->errors();
 
             $messageList = array_map((fn (NodeMessage $message) => (string)$message), iterator_to_array($errorMessages));
-            if ($this->logger) {
-                $this->logger->error(sprintf("Could not parse Content\n%s", implode(',', $messageList)));
-            }
+            /** @var LoggerInterface $logger */
+            $logger = $this->logger;
+            $logger->error(sprintf("Could not parse Content\n%s", implode(',', $messageList)));
             return null;
         }
     }

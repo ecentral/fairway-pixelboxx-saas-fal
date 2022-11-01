@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Fairway\PixelboxxSaasFal\Metadata;
 
+use Doctrine\DBAL\FetchMode;
 use Doctrine\DBAL\Platforms\SQLServerPlatform;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -54,7 +55,12 @@ class MetadataRepository extends Typo3MetaDataRepository
             return [];
         }
 
-        $record = $statement->fetchAllAssociative();
+        $record = null;
+        if (method_exists($statement, 'fetchAllAssociative')) {
+            $record = $statement->fetchAllAssociative();
+        } elseif (method_exists($statement, 'fetch')) {
+            $record = $statement->fetch(FetchMode::ASSOCIATIVE);
+        }
         if (empty($record)) {
             return [];
         }

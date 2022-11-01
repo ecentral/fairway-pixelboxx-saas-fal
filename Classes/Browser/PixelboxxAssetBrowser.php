@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Fairway\PixelboxxSaasFal\Browser;
 
+use Fairway\PixelboxxSaasApi\Client;
 use Fairway\PixelboxxSaasFal\Driver\PixelboxxDriver;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
@@ -80,9 +81,13 @@ final class PixelboxxAssetBrowser extends AbstractElementBrowser implements Elem
         );
 
         $this->moduleTemplate->getView()->setTemplate('Search');
+        $domain = $this->getAssetPickerDomain();
+        $client = Client::createWithDomain($this->storage->getConfiguration()['pixelboxxDomain'])
+            ->authenticate($this->storage->getConfiguration()['userName'], $this->storage->getConfiguration()['userPassword']);
         $this->moduleTemplate->getView()->assignMultiple([
             'storage' => $this->storage,
-            'assetPickerDomain' => $this->getAssetPickerDomain(),
+            'assetPickerDomain' => $domain,
+            'token' => $client->getAccessToken(),
         ]);
         return $this->moduleTemplate->renderContent();
     }
