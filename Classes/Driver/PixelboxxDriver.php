@@ -15,6 +15,7 @@ use Fairway\FairwayFilesystemApi\Adapter\PixelboxxAdapter\Driver;
 use Fairway\FairwayFilesystemApi\Directory;
 use Fairway\FairwayFilesystemApi\FileType;
 use Fairway\PixelboxxSaasApi\Client;
+use Fairway\PixelboxxSaasApi\Model\Metadata;
 use Fairway\PixelboxxSaasApi\PixelboxxResourceName;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Http\FalDumpFileContentsDecoratorStream;
@@ -292,7 +293,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
      */
     public function fileExistsInFolder($fileName, $folderIdentifier): bool
     {
-        throw new NotImplementedMethodException();
+        return $this->getFileInFolder($fileName, $folderIdentifier) !== '';
     }
 
     /**
@@ -391,18 +392,17 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
             $asset->getParentOfIdentifier()->toArray()
         ));
         $extension = array_reverse(explode('.', $asset->getFileName()))[0];
-        $id = (new PixelboxxResourceName($prn))->getResourceId() ?? $asset->getIdentifier();
+
         return [
-            'identifier' => $id,
+            'identifier' => $fileIdentifier,
             'name' => $asset->getFileName(),
             'mtime' => $asset->getMTime(),
             'ctime' => $asset->getCTime(),
-            'hash' => $this->hash($id, 'md5'),
-            'identifier_hash' => $this->hash($id, 'md5'),
+            'identifier_hash' => $this->hash($fileIdentifier, 'sha1'),
             'extension' => $extension,
             'mimetype' => $asset->getMimeType(),
             'size' => $asset->getSize(),
-            'folder_hash' => $this->hash($combinedDirectoryIdentifier, 'md5'),
+            'folder_hash' => $this->hash($combinedDirectoryIdentifier, 'sha1'),
             'storage' => $this->storageUid
         ];
     }
@@ -444,7 +444,24 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
      */
     public function getFileInFolder($fileName, $folderIdentifier): string
     {
-        throw new NotImplementedMethodException();
+        if (!$folderIdentifier || $folderIdentifier === '/') {
+            // there cannot be files inside the root folder
+            return '';
+        }
+        $identifier = $this->getIdentifier($folderIdentifier, FileType::DIRECTORY);
+        if ($identifier === null) {
+            throw new \Exception(sprintf('Identifier %s not found', $identifier));
+        }
+        $folderWithAssets = $this->getDriver()->getClient()->folders()->getFolderAssets($identifier);
+        if ($folderWithAssets === null) {
+            return '';
+        }
+        foreach ($folderWithAssets->getFolder()->getAssets() as $asset) {
+            if ($asset->getName() === $fileName) {
+                return $asset->getId()->getResourceId() ?? '';
+            }
+        }
+        return '';
     }
 
     /**
@@ -460,7 +477,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
      */
     public function getFilesInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = false, array $filenameFilterCallbacks = [], $sort = '', $sortRev = false): array
     {
-        if (!$folderIdentifier) {
+        if (!$folderIdentifier || $folderIdentifier === '/') {
             return [];
         }
         $identifier = $this->getIdentifier($folderIdentifier, FileType::DIRECTORY);
@@ -519,12 +536,13 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
      */
     public function countFilesInFolder($folderIdentifier, $recursive = false, array $filenameFilterCallbacks = []): int
     {
-        if (!$folderIdentifier) {
+        $identifier = $this->getIdentifier($folderIdentifier, FileType::DIRECTORY);
+        if ($identifier === null) {
             return 0;
         }
         $assets = $this->getDriver()->getClient()
             ->folders()
-            ->getFolderAssets($this->getIdentifier($folderIdentifier, FileType::DIRECTORY));
+            ->getFolderAssets($identifier);
         if ($assets === null) {
             return 0;
         }
@@ -569,8 +587,25 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         );
     }
 
-    private function getIdentifier(string $identifier, string $fileType): ?string
+    /**
+     * @param string $identifier
+     * @return Metadata[]
+     * @throws \Fairway\FairwayFilesystemApi\Exceptions\NotSupportedException
+     */
+    public function getMetadata(string $identifier): array
     {
+        $prn = $this->getIdentifier($identifier, FileType::FILE);
+        if ($prn === null) {
+            return [];
+        }
+        return $this->getDriver()->getMetadata($prn);
+    }
+
+    public function getIdentifier(string $identifier, string $fileType): ?string
+    {
+        if ($identifier === '/') {
+            return null;
+        }
         try {
             if (str_starts_with($identifier, 'prn')) {
                 return (string)(new PixelboxxResourceName($identifier));
