@@ -12,14 +12,20 @@ declare(strict_types=1);
 namespace Fairway\PixelboxxSaasFal\Extractor;
 
 use Fairway\PixelboxxSaasFal\Driver\PixelboxxDriver;
+use Fairway\PixelboxxSaasFal\Metadata\MetadataManager;
 use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\ExtractorInterface;
-use TYPO3\CMS\Core\Type\File\ImageInfo;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class PixelboxxFileExtractor implements ExtractorInterface
 {
+    private MetadataManager $manager;
+
+    public function __construct(MetadataManager $manager)
+    {
+        $this->manager = $manager;
+    }
+
     /**
      * @return int[]
      */
@@ -59,25 +65,8 @@ final class PixelboxxFileExtractor implements ExtractorInterface
      */
     public function extractMetaData(File $file, array $previousExtractedData = []): array
     {
-        if (empty($previousExtractedData['width']) || empty($previousExtractedData['height'])) {
-            [$width, $height] = $this->getImageDimensionsOfRemoteFile($file);
-            $previousExtractedData['width'] = $width;
-            $previousExtractedData['height'] = $height;
-        }
-
-        return $previousExtractedData;
-    }
-
-    /**
-     * @param AbstractFile $file
-     * @return int[]
-     */
-    public function getImageDimensionsOfRemoteFile(AbstractFile $file): array
-    {
-        $imageInfo = GeneralUtility::makeInstance(
-            ImageInfo::class,
-            $file->getForLocalProcessing()
-        );
-        return [$imageInfo->getWidth(), $imageInfo->getHeight()];
+        $metadata = $this->manager->syncFromRemote($file, $previousExtractedData);
+        $this->manager->syncTranslationsFromRemote($file);
+        return $metadata;
     }
 }

@@ -18,6 +18,10 @@ install version="8.0":
     just _clean
     just _docker {{ version }} "composer install"
 
+require req version="8.0":
+    just _clean
+    just _docker {{ version }} "composer req {{ req }}"
+
 grumphp version="8.0":
     just install {{ version }}
     just _docker {{ version }} ".Build/bin/grumphp run"
