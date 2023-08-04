@@ -26,7 +26,7 @@
             </userPassword>
             <pixelboxxDomain>
                 <TCEforms>
-                    <label>pixelboxx_saas_fal/Resources/Private/Language/locallang_be.xlf:sys_file_storage.pixelboxxDriverFlexform_pixelboxxDomain</label>
+                    <label>LLL:EXT:pixelboxx_saas_fal/Resources/Private/Language/locallang_be.xlf:sys_file_storage.pixelboxxDriverFlexform_pixelboxxDomain</label>
                     <config>
                         <type>input</type>
                         <eval>required,trim</eval>
@@ -34,6 +34,19 @@
                     </config>
                 </TCEforms>
             </pixelboxxDomain>
+            <metadataMapping>
+                <TCEforms>
+                    <label>LLL:EXT:pixelboxx_saas_fal/Resources/Private/Language/locallang_be.xlf:sys_file_storage.pixelboxxDriverFlexform_metadataFieldMapping</label>
+                    <config>
+                        <type>text</type>
+                        <renderType>jsonForm</renderType>
+                        <rows>9</rows>
+                        <options>
+                            <mode>tree</mode>
+                        </options>
+                    </config>
+                </TCEforms>
+            </metadataMapping>
         </el>
     </ROOT>
 </T3DataStructure>

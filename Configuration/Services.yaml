@@ -11,6 +11,12 @@ services:
   Fairway\PixelboxxSaasFal\Controller\:
     resource: '../Classes/Controller/*'
 
+  Fairway\PixelboxxSaasFal\Metadata\:
+    resource: '../Classes/Metadata/*'
+
+  Fairway\PixelboxxSaasFal\Extractor\PixelboxxFileExtractor:
+    public: true
+
   Fairway\PixelboxxSaasFal\Listener\BeforeFileProcessingEventListener:
     tags:
       - name: event.listener
