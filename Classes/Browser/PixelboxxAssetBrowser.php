@@ -15,6 +15,8 @@ use Fairway\PixelboxxSaasApi\Client;
 use Fairway\PixelboxxSaasFal\Driver\PixelboxxDriver;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Backend\View\BackendViewFactory;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
@@ -23,20 +25,27 @@ use TYPO3\CMS\Recordlist\Browser\AbstractElementBrowser;
 use TYPO3\CMS\Recordlist\Browser\ElementBrowserInterface;
 use TYPO3\CMS\Recordlist\Tree\View\LinkParameterProviderInterface;
 
-final class PixelboxxAssetBrowser extends AbstractElementBrowser implements ElementBrowserInterface, LinkParameterProviderInterface
+final class PixelboxxAssetBrowser extends \TYPO3\CMS\Backend\ElementBrowser\AbstractElementBrowser
+    implements  \TYPO3\CMS\Backend\ElementBrowser\ElementBrowserInterface, \TYPO3\CMS\Backend\Tree\View\LinkParameterProviderInterface
 {
     private ResourceStorage $storage;
     private StorageRepository $storageRepository;
+
+    public const IDENTIFIER = 'pixelboxx';
+    protected string $identifier = self::IDENTIFIER;
 
     public function __construct(
         IconFactory $iconFactory,
         PageRenderer $pageRenderer,
         UriBuilder $uriBuilder,
-        ModuleTemplateFactory $moduleTemplateFactory,
+        ExtensionConfiguration $extensionConfiguration,
+        BackendViewFactory $backendViewFactory,
+     //   ModuleTemplateFactory $moduleTemplateFactory,  // pre v12
         StorageRepository $storageRepository
     ) {
         $this->storageRepository = $storageRepository;
-        parent::__construct($iconFactory, $pageRenderer, $uriBuilder, $moduleTemplateFactory);
+      //  parent::__construct($iconFactory, $pageRenderer, $uriBuilder, $moduleTemplateFactory);
+        parent::__construct($iconFactory, $pageRenderer, $uriBuilder,$extensionConfiguration, $backendViewFactory);
     }
 
     protected function initialize(): void
