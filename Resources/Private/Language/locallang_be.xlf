@@ -3,13 +3,13 @@
 	<file source-language="en" datatype="plaintext" original="EXT:pixelboxx_saas_fal/Resources/Private/Language/locallang_be.xlf" date="2021-07-22T06:52:24Z" product-name="lang">
 		<header/>
 		<body>
-			<trans-unit id="sys_file_storage.pixelboxxDriverFlexform_appId" resname="sys_file_storage.pixelboxxDriverFlexform_userName">
+			<trans-unit id="sys_file_storage.pixelboxxDriverFlexform_userName" resname="sys_file_storage.pixelboxxDriverFlexform_userName">
 				<source>Username</source>
 			</trans-unit>
-			<trans-unit id="sys_file_storage.pixelboxxDriverFlexform_appSecret" resname="sys_file_storage.pixelboxxDriverFlexform_userPassword">
+			<trans-unit id="sys_file_storage.pixelboxxDriverFlexform_userPassword" resname="sys_file_storage.pixelboxxDriverFlexform_userPassword">
 				<source>Password</source>
 			</trans-unit>
-			<trans-unit id="sys_file_storage.pixelboxxDriverFlexform_cantoName" resname="sys_file_storage.pixelboxxDriverFlexform_pixelboxxDomain">
+			<trans-unit id="sys_file_storage.pixelboxxDriverFlexform_pixelboxxDomain" resname="sys_file_storage.pixelboxxDriverFlexform_pixelboxxDomain">
 				<source>Domain</source>
 			</trans-unit>
 			<trans-unit id="pixelboxx_asset_browser.title" resname="pixelboxx_asset_browser.title">
