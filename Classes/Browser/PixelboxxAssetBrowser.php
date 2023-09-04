@@ -14,19 +14,18 @@ namespace Fairway\PixelboxxSaasFal\Browser;
 use Fairway\PixelboxxSaasApi\Client;
 use Fairway\PixelboxxSaasFal\Driver\PixelboxxDriver;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\View\BackendViewFactory;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Resource\StorageRepository;
-use TYPO3\CMS\Recordlist\Browser\AbstractElementBrowser;
-use TYPO3\CMS\Recordlist\Browser\ElementBrowserInterface;
-use TYPO3\CMS\Recordlist\Tree\View\LinkParameterProviderInterface;
+use TYPO3\CMS\Core\View\FluidViewAdapter;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 
 final class PixelboxxAssetBrowser extends \TYPO3\CMS\Backend\ElementBrowser\AbstractElementBrowser
-    implements  \TYPO3\CMS\Backend\ElementBrowser\ElementBrowserInterface, \TYPO3\CMS\Backend\Tree\View\LinkParameterProviderInterface
+    implements \TYPO3\CMS\Backend\ElementBrowser\ElementBrowserInterface, \TYPO3\CMS\Backend\Tree\View\LinkParameterProviderInterface
 {
     private ResourceStorage $storage;
     private StorageRepository $storageRepository;
@@ -35,31 +34,32 @@ final class PixelboxxAssetBrowser extends \TYPO3\CMS\Backend\ElementBrowser\Abst
     protected string $identifier = self::IDENTIFIER;
 
     public function __construct(
-        IconFactory $iconFactory,
-        PageRenderer $pageRenderer,
-        UriBuilder $uriBuilder,
+        IconFactory            $iconFactory,
+        PageRenderer           $pageRenderer,
+        UriBuilder             $uriBuilder,
         ExtensionConfiguration $extensionConfiguration,
-        BackendViewFactory $backendViewFactory,
-     //   ModuleTemplateFactory $moduleTemplateFactory,  // pre v12
-        StorageRepository $storageRepository
-    ) {
+        BackendViewFactory     $backendViewFactory,
+        StorageRepository      $storageRepository
+    )
+    {
         $this->storageRepository = $storageRepository;
-      //  parent::__construct($iconFactory, $pageRenderer, $uriBuilder, $moduleTemplateFactory);
-        parent::__construct($iconFactory, $pageRenderer, $uriBuilder,$extensionConfiguration, $backendViewFactory);
+        parent::__construct($iconFactory, $pageRenderer, $uriBuilder, $extensionConfiguration, $backendViewFactory);
     }
 
     protected function initialize(): void
     {
         parent::initialize();
-        $this->initializeView();
         $this->initializeStorage();
 
         $this->pageRenderer->addCssFile(
             'EXT:pixelboxx_saas_fal/Resources/Public/Css/PixelboxxAssetBrowser.css'
         );
-        $this->pageRenderer->loadRequireJsModule(
-            'TYPO3/CMS/PixelboxxSaasFal/PixelboxxAssetPicker'
-        );
+        if ((new Typo3Version())->getMajorVersion() >= 12) {
+            $this->pageRenderer->loadJavaScriptModule('@fairway/pixelboxx-saas-fal/pixelboxx-asset-picker.js');
+        } else {
+            $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/PixelboxxSaasFal/PixelboxxAssetPicker');
+        }
+
     }
 
     protected function getBodyTagAttributes(): array
@@ -82,23 +82,31 @@ final class PixelboxxAssetBrowser extends \TYPO3\CMS\Backend\ElementBrowser\Abst
 
     public function render(): string
     {
-        $this->setBodyTagParameters();
-        $this->moduleTemplate->setTitle(
-            $this->getLanguageService()->sL(
-                'LLL:EXT:pixelboxx_saas_fal/Resources/Private/Language/locallang_be.xlf:pixelboxx_asset_browser.title'
-            )
-        );
+        $templateView = $this->view;
+        // Make sure that the base initialization creates an FluidView within an FluidViewAdapter
+        $templateView = (fn($templateView): FluidViewAdapter => $templateView) ($templateView);
 
-        $this->moduleTemplate->getView()->setTemplate('Search');
+
+        $contentOnly = (bool)($this->getRequest()->getQueryParams()['contentOnly'] ?? false);
+        $this->pageRenderer->setTitle($this->getLanguageService()->sL('LLL:EXT:pixelboxx_saas_fal/Resources/Private/Language/locallang_be.xlf:pixelboxx_asset_browser.title'));
+
         $domain = $this->getAssetPickerDomain();
         $client = Client::createWithDomain($this->storage->getConfiguration()['pixelboxxDomain'])
             ->authenticate($this->storage->getConfiguration()['userName'], $this->storage->getConfiguration()['userPassword']);
-        $this->moduleTemplate->getView()->assignMultiple([
+
+        $templateView->assignMultiple([
             'storage' => $this->storage,
             'assetPickerDomain' => $domain,
             'token' => $client->getAccessToken(),
         ]);
-        return $this->moduleTemplate->renderContent();
+
+        $content = $this->view->render('PixelboxxAssetBrowser/Search');
+        if ($contentOnly) {
+            return $content;
+        }
+
+        $this->pageRenderer->setBodyContent('<body ' . $this->getBodyTagParameters() . '>' . $content);
+        return $this->pageRenderer->render();
     }
 
     /**
@@ -112,7 +120,10 @@ final class PixelboxxAssetBrowser extends \TYPO3\CMS\Backend\ElementBrowser\Abst
 
     public function getScriptUrl(): string
     {
-        return $this->thisScript;
+        $thisScript = (string)$this->uriBuilder->buildUriFromRoute(
+            $this->getRequest()->getAttribute('route')->getOption('_identifier')
+        );
+        return $thisScript;
     }
 
     /**
@@ -136,19 +147,6 @@ final class PixelboxxAssetBrowser extends \TYPO3\CMS\Backend\ElementBrowser\Abst
         return false;
     }
 
-    private function initializeView(): void
-    {
-        $view = $this->moduleTemplate->getView();
-        $view->setLayoutRootPaths([
-            100 => 'EXT:pixelboxx_saas_fal/Resources/Private/Layouts/'
-        ]);
-        $view->setPartialRootPaths([
-            100 => 'EXT:pixelboxx_saas_fal/Resources/Private/Partials/',
-        ]);
-        $view->setTemplateRootPaths([
-            100 => 'EXT:pixelboxx_saas_fal/Resources/Private/Templates/PixelboxxAssetBrowser/'
-        ]);
-    }
 
     private function initializeStorage(): void
     {

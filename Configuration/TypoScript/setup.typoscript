@@ -1,0 +1,7 @@
+module.pixelboxx_saas_fal {
+  view {
+    templateRootPaths {
+      1644485473 = EXT:myext/Resources/Private/Templates/PixelboxxAssetBrowser/
+    }
+  }
+}
