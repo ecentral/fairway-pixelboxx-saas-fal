@@ -20,6 +20,7 @@ use Fairway\PixelboxxSaasFal\Driver\PixelboxxDriver;
 use Fairway\PixelboxxSaasFal\Mapping\MetadataMapping;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Type\File\ImageInfo;
@@ -174,7 +175,7 @@ final class MetadataManager
             $messageList = array_map((fn (NodeMessage $message) => (string)$message), iterator_to_array($errorMessages));
             /** @var LoggerInterface $logger */
             $logger = $this->logger;
-            $logger->error(sprintf("Could not parse Content\n%s", implode(',', $messageList)));
+            $logger->log(LogLevel::ERROR, sprintf("Could not parse Content\n%s", implode(',', $messageList)), []);
             return null;
         }
     }
