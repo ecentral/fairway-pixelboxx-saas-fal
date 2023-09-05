@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "pixelboxx_saas_fal" Extension for TYPO3 CMS.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE file that was distributed with this source code.
+ */
+
 namespace Fairway\PixelboxxSaasFal\Form\Container;
 
 use TYPO3\CMS\Backend\Form\Container\InlineControlContainer as Typo3InlineControlContainer;
@@ -9,6 +16,10 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 
 final class InlineControlContainer extends Typo3InlineControlContainer
 {
+    /**
+     * @param array<string, mixed> $inlineConfiguration
+     * @return string
+     */
     protected function renderPossibleRecordsSelectorTypeGroupDB(array $inlineConfiguration): string
     {
         $buttons = parent::renderPossibleRecordsSelectorTypeGroupDB($inlineConfiguration);
@@ -21,6 +32,11 @@ final class InlineControlContainer extends Typo3InlineControlContainer
         return $buttons;
     }
 
+    /**
+     * @param array<string, mixed> $inlineConfiguration
+     * @param int $storageId
+     * @return string
+     */
     private function renderPixelboxxAssetPickerButton(array $inlineConfiguration, int $storageId): string
     {
         $buttonStyle = '';
@@ -56,8 +72,8 @@ HTML;
 
     private function appendButton(string $origHtml, string $buttonHtml): string
     {
-        $inlineControlsPosition = strpos($origHtml, 't3js-inline-controls');
-        $inlineControlsClosingTagPosition = strpos($origHtml, '</div>', $inlineControlsPosition);
+        $inlineControlsPosition = strpos($origHtml, 't3js-inline-controls') ?: 0;
+        $inlineControlsClosingTagPosition = strpos($origHtml, '</div>', $inlineControlsPosition) ?: 0;
         return substr_replace($origHtml, $buttonHtml, $inlineControlsClosingTagPosition, 0);
     }
 

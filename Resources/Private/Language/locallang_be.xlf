@@ -15,6 +15,9 @@
 			<trans-unit id="pixelboxx_asset_browser.title" resname="pixelboxx_asset_browser.title">
 				<source>Pixelboxx Asset Picker</source>
 			</trans-unit>
+			<trans-unit id="sys_file_storage.pixelboxxDriverFlexform_metadataFieldMapping" resname="sys_file_storage.pixelboxxDriverFlexform_metadataFieldMapping">
+				<source>Pixelboxx MetaData Mapping (json)</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
