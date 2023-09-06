@@ -28,7 +28,7 @@ final class FileControlContainer extends FilesControlContainerCore
 
         /** @var  DomainConfigurationService $service */
         $service = GeneralUtility::makeInstance(DomainConfigurationServiceFactory::class)();
-        $storageIds = [3, 3];//$service->getAssetPickerStorageIds();
+        $storageIds = $service->getAssetPickerStorageIds();
 
         foreach ($storageIds as $storageId) {
 
