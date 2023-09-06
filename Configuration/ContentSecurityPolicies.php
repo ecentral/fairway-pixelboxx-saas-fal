@@ -8,6 +8,7 @@ use TYPO3\CMS\Core\Security\ContentSecurityPolicy\Scope;
 use TYPO3\CMS\Core\Type\Map;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+
 try {
     /** @var  DomainConfigurationService $service */
     $service = GeneralUtility::makeInstance(DomainConfigurationServiceFactory::class)();
@@ -16,7 +17,6 @@ try {
 
     return Map::fromEntries([Scope::backend(), $collection]);
 
-} catch (Throwable) {
-
+} catch (\Exception $ex ) {
+ 
 }
-
