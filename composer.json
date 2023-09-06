@@ -60,13 +60,6 @@
       "phpro/grumphp": true
     }
   },
-  "scripts": {
-    "post-autoload-dump": [
-      "mkdir -p .Build/Web/typo3conf/ext/",
-      "[ -L .Build/Web/typo3conf/ext/pixelboxx_saas_fal ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/pixelboxx_saas_fal"
-    ],
-    "phpstan": "phpstan analyse -c phpstan.neon"
-  },
   "extra": {
     "typo3/cms": {
       "web-dir": ".Build/Web",

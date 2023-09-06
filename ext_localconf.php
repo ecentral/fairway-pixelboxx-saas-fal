@@ -40,26 +40,3 @@ if (\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Informa
         'class' => \Fairway\PixelboxxSaasFal\Form\Container\FileControlContainer::class,
     ];
 }
-
-
-
-ExtensionManagementUtility::addService(
-// Extension Key
-    'pixelboxx_saas_fal',
-    // Service type
-    'pixelboxx_domains',
-    // Service key
-    'tx_pxielboxx_tdomain',
-    [
-        'title' => 'Pixelboxx Domains',
-        'description' => 'Provides access to remote pixelboxx Domains',
-        'subtype' => '',
-        'available' => true,
-        'priority' => 60,
-        'quality' => 80,
-
-        'os' => '',
-        'exec' => '',
-        'className' => \Fairway\PixelboxxSaasFal\Service\DomainConfigurationService::class,
-    ]
-);
