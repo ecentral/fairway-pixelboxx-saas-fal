@@ -83,12 +83,7 @@ final class DomainConfigurationService
 
     private function buildMutationCollectionFromArray(array $array): MutationCollection
     {
-        $mutations = array_map([$this, 'id'], $array);
-        return new MutationCollection(...$mutations);
+        return new MutationCollection(...$array);
     }
 
-    private function id(Mutation $m): Mutation
-    {
-        return $m;
-    }
 }
