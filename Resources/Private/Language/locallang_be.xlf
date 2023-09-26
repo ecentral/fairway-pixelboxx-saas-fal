@@ -18,6 +18,9 @@
 			<trans-unit id="sys_file_storage.pixelboxxDriverFlexform_metadataFieldMapping" resname="sys_file_storage.pixelboxxDriverFlexform_metadataFieldMapping">
 				<source>Pixelboxx MetaData Mapping (json)</source>
 			</trans-unit>
+			<trans-unit id="pixelboxx_asset_browser.add_button_title" resname="pixelboxx_asset_browser.add_button_title">
+				<source>Add Pixelboxx file</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

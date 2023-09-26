@@ -58,7 +58,7 @@ final class FileControlContainer extends FilesControlContainerCore
         );
         $objectPrefix = $currentStructureDomObjectIdPrefix . '-' . $foreignTable;
 
-        $title = 'Add Pixelboxx file';
+        $title = htmlspecialchars($this->getLanguageService()->sL('LLL:EXT:pixelboxx_saas_fal/Resources/Private/Language/locallang_be.xlf:pixelboxx_asset_browser.add_button_title'));
         if ($renderStorageId) { // multiple storage configurations present, result in rendering ids behind buttton
             $title .= ' [' . $storageId . ']';
         }
