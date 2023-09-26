@@ -34,8 +34,8 @@ final class DomainConfigurationReader
 
     public static function getDomain(): string
     {
-        $dcf =  GeneralUtility::makeInstance(DomainConfigurationReader::class);
-        return $dcf->getAssetPickerDomain();
+        $domainConfigurationReader =  GeneralUtility::makeInstance(DomainConfigurationReader::class);
+        return $domainConfigurationReader->getAssetPickerDomain();
     }
 
 
