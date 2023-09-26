@@ -33,7 +33,7 @@ final class FileControlContainer extends FilesControlContainerCore
         foreach ($storageIds as $storageId) {
             if ($storageId > 0) {
                 $newbuttonData = $this->renderPixelboxxAssetPickerButton($inlineConfiguration, $storageId, count($storageIds) > 1);
-                $rval[count($rval)] = $newbuttonData;
+                $rval[] = $newbuttonData;
             }
         }
         return $rval;
@@ -51,12 +51,12 @@ final class FileControlContainer extends FilesControlContainerCore
             $buttonStyle = ' style="' . $inlineConfiguration['inline']['inlineNewRelationButtonStyle'] . '"';
         }
 
-        $foreign_table = $inlineConfiguration['foreign_table'];
+        $foreignTable = $inlineConfiguration['foreign_table'];
         $allowed = $inlineConfiguration['allowed'];
         $currentStructureDomObjectIdPrefix = $this->inlineStackProcessor->getCurrentStructureDomObjectIdPrefix(
             $this->data['inlineFirstPid']
         );
-        $objectPrefix = $currentStructureDomObjectIdPrefix . '-' . $foreign_table;
+        $objectPrefix = $currentStructureDomObjectIdPrefix . '-' . $foreignTable;
 
         $title = 'Add Pixelboxx file';
         if ($renderStorageId) { // multiple storage configurations present, result in rendering ids behind buttton
