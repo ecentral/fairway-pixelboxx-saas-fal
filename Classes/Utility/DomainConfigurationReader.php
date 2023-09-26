@@ -18,11 +18,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class DomainConfigurationReader
 {
+    public const IDENTIFIER = 'pixelboxx';
+
+    protected string $identifier = self::IDENTIFIER;
     private ResourceStorage $storage;
     private StorageRepository $storageRepository;
-
-    public const IDENTIFIER = 'pixelboxx';
-    protected string $identifier = self::IDENTIFIER;
 
     public function __construct(
         StorageRepository $storageRepository

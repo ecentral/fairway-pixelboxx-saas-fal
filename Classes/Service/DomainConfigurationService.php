@@ -25,10 +25,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 final class DomainConfigurationService
 {
 
-    private StorageRepository $storageRepository;
-
     public const IDENTIFIER = 'pixelboxx';
+
     protected string $identifier = self::IDENTIFIER;
+    private StorageRepository $storageRepository;
 
     public function __construct(
         StorageRepository $storageRepository
@@ -56,13 +56,12 @@ final class DomainConfigurationService
         $domains = [];
         $storages = $this->storageRepository->findByStorageType(PixelboxxDriver::DRIVER_NAME);
         foreach ($storages as $storage) {
-
             $storageId = $storage->getUid();
             $domain = $storage->getConfiguration()['pixelboxxDomain'] ?? '';
             if (!is_string($domain) || $domain === '') {
-                throw new \Exception('Pixelboxx-Domain does not seem to be configured for %d', $storageId);
+                throw new \Exception('Pixelboxx domain does not seem to be configured for %d', $storageId);
             }
-            $domains [] = $domain;
+            $domains[] = $domain;
         }
         return $domains;
     }
@@ -73,7 +72,7 @@ final class DomainConfigurationService
         try {
             $domains = $this->getAssetPickerDomains();
             foreach ($domains as $domain) {
-                $mutations [] = new Mutation(MutationMode::Extend, Directive::FrameSrc, SourceScheme::https, new UriValue($domain));
+                $mutations[] = new Mutation(MutationMode::Extend, Directive::FrameSrc, SourceScheme::https, new UriValue($domain));
             }
             return $this->buildMutationCollectionFromArray($mutations);
 

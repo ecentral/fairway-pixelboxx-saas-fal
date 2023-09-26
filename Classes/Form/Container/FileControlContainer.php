@@ -31,11 +31,9 @@ final class FileControlContainer extends FilesControlContainerCore
         $storageIds = $service->getAssetPickerStorageIds();
 
         foreach ($storageIds as $storageId) {
-
             if ($storageId > 0) {
                 $newbuttonData = $this->renderPixelboxxAssetPickerButton($inlineConfiguration, $storageId, count($storageIds) > 1);
                 $rval[count($rval)] = $newbuttonData;
-
             }
         }
         return $rval;

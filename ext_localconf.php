@@ -33,7 +33,7 @@ if (\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Informa
         'priority' => 100,
         'class' => \Fairway\PixelboxxSaasFal\Form\Container\InlineControlContainer::class,
     ];/**/
-}else{
+} else {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1628070217] = [
         'nodeName' => \TYPO3\CMS\Backend\Form\Container\FilesControlContainer::NODE_TYPE_IDENTIFIER,
         'priority' => 100,

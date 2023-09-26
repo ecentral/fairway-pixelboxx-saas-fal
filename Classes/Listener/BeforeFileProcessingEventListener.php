@@ -25,24 +25,24 @@ final class BeforeFileProcessingEventListener
         $processedFile = $event->getProcessedFile();
         $configuration = $event->getConfiguration();
         $processedFile->setUsesOriginalFile();
-        if(isset($configuration['width'])){
+        if (isset($configuration['width'])){
             if (isset($configuration['maxWidth']) && $configuration['maxWidth'] > $configuration['width']) {
                 $properties['width'] = $configuration['maxWidth'];
-            }else{
+            } else {
                 $properties['width'] = $configuration['width'];
             }
-        }else{
+        } else {
             $properties['width'] = null;
         }
 
-        if(isset($configuration['height'])){            
+        if (isset($configuration['height'])){            
             if (isset($configuration['maxHeight']) && $configuration['maxHeight'] > $configuration['height']) {
                 $properties['height'] = $configuration['maxHeight'];
-            }else{
+            } else {
 
                 $properties['height'] = $configuration['height'];
             }
-        }else{            
+        } else {            
             $properties['width'] = null;
         }
         

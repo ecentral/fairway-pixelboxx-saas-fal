@@ -27,7 +27,7 @@ final class DomainConfigurationServiceFactory
 
     public function __invoke(): ?DomainConfigurationService
     {
-        return new DomainConfigurationService( $this->storageRepository);
+        return new DomainConfigurationService($this->storageRepository);
     }
 
 }
