@@ -80,13 +80,13 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
 
     public function getPublicUrl($identifier): string
     {
-        $rval = "";
+        $publicUrl = "";
         try {
             $apiAdapter = $this->getAdapter();
-            $rval = $apiAdapter->getPublicUrl($identifier);
+            $publicUrl = $apiAdapter->getPublicUrl($identifier);
         } catch (\Exception $ex) {
         }
-        return $rval;
+        return $publicUrl;
     }
 
     /**
