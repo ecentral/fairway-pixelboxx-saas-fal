@@ -24,7 +24,7 @@ final class FileControlContainer extends FilesControlContainerCore
      */
     protected function getFileSelectors(array $inlineConfiguration, FileExtensionFilter $fileExtensionFilter): array
     {
-        $rval = parent::getFileSelectors($inlineConfiguration, $fileExtensionFilter);
+        $fileSelectors = parent::getFileSelectors($inlineConfiguration, $fileExtensionFilter);
 
         /** @var  DomainConfigurationService $service */
         $service = GeneralUtility::makeInstance(DomainConfigurationServiceFactory::class)();
@@ -33,10 +33,10 @@ final class FileControlContainer extends FilesControlContainerCore
         foreach ($storageIds as $storageId) {
             if ($storageId > 0) {
                 $newbuttonData = $this->renderPixelboxxAssetPickerButton($inlineConfiguration, $storageId, count($storageIds) > 1);
-                $rval[] = $newbuttonData;
+                $fileSelectors[] = $newbuttonData;
             }
         }
-        return $rval;
+        return $fileSelectors;
     }
 
     /**
