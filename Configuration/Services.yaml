@@ -17,6 +17,14 @@ services:
   Fairway\PixelboxxSaasFal\Extractor\PixelboxxFileExtractor:
     public: true
 
+  Fairway\PixelboxxSaasFal\Service\DomainConfigurationServiceFactory:
+    public: true
+    shared: true
+
+  Fairway\PixelboxxSaasFal\Service\DomainConfigurationService:
+    public: true
+    shared: true
+
   Fairway\PixelboxxSaasFal\Listener\BeforeFileProcessingEventListener:
     tags:
       - name: event.listener

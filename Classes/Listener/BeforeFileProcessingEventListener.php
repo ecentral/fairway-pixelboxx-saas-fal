@@ -25,14 +25,27 @@ final class BeforeFileProcessingEventListener
         $processedFile = $event->getProcessedFile();
         $configuration = $event->getConfiguration();
         $processedFile->setUsesOriginalFile();
-        $properties['width'] = $configuration['width'];
-        $properties['height'] = $configuration['height'];
-        if (isset($configuration['maxHeight']) && $configuration['maxHeight'] > $configuration['height']) {
-            $properties['height'] = $configuration['maxHeight'];
+        if (isset($configuration['width'])){
+            if (isset($configuration['maxWidth']) && $configuration['maxWidth'] > $configuration['width']) {
+                $properties['width'] = $configuration['maxWidth'];
+            } else {
+                $properties['width'] = $configuration['width'];
+            }
+        } else {
+            $properties['width'] = null;
         }
-        if (isset($configuration['maxHeight']) && $configuration['maxHeight'] > $configuration['width']) {
-            $properties['width'] = $configuration['maxHeight'];
+
+        if (isset($configuration['height'])){            
+            if (isset($configuration['maxHeight']) && $configuration['maxHeight'] > $configuration['height']) {
+                $properties['height'] = $configuration['maxHeight'];
+            } else {
+
+                $properties['height'] = $configuration['height'];
+            }
+        } else {            
+            $properties['width'] = null;
         }
+        
         $processedFile->updateProperties($properties);
         $event->setProcessedFile($processedFile);
     }

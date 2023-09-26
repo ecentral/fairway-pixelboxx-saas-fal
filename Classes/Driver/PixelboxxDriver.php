@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Fairway\PixelboxxSaasFal\Driver;
 
-use Fairway\FairwayFilesystemApi\Adapter\PixelboxxAdapter\Driver;
+use Fairway\PixelboxxSaasApi\Adapter\Driver as Adapter;
 use Fairway\FairwayFilesystemApi\Directory;
 use Fairway\FairwayFilesystemApi\FileType;
 use Fairway\PixelboxxSaasApi\Client;
@@ -30,7 +30,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements StreamableDriverInterface
 {
     public const DRIVER_NAME = 'Pixelboxx';
-    private ?Driver $driver;
+    private ?Adapter $driver;
     private bool $validConfiguration = false;
 
     /**
@@ -58,7 +58,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         if ($this->driver === null && $this->validConfiguration === true) {
             $client = Client::createWithDomain($this->configuration['pixelboxxDomain'])
                 ->authenticate($this->configuration['userName'], $this->configuration['userPassword']);
-            $this->driver = new Driver($client);
+            $this->driver = new Adapter($client);
         }
     }
 
@@ -80,7 +80,13 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
 
     public function getPublicUrl($identifier): string
     {
-        return $this->getDriver()->getPublicUrl($identifier);
+        $publicUrl = "";
+        try {
+            $apiAdapter = $this->getAdapter();
+            $publicUrl = $apiAdapter->getPublicUrl($identifier);
+        } catch (\Exception $ex) {
+        }
+        return $publicUrl;
     }
 
     /**
@@ -125,7 +131,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         if ($identifier === null) {
             throw new \Exception(sprintf('Identifier %s could not be found', $fileIdentifier));
         }
-        return $this->getDriver()->exists($identifier, FileType::FILE);
+        return $this->getAdapter()->exists($identifier, FileType::FILE);
     }
 
     /**
@@ -140,7 +146,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
             // root folder
             return true;
         }
-        return $this->getDriver()->exists($identifier, FileType::DIRECTORY);
+        return $this->getAdapter()->exists($identifier, FileType::DIRECTORY);
     }
 
     /**
@@ -154,7 +160,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         if ($identifier === null) {
             throw new \Exception(sprintf('Identifier %s could not be found', $folderIdentifier));
         }
-        return $this->getDriver()->listDirectory($identifier)->count() === 0;
+        return $this->getAdapter()->listDirectory($identifier)->count() === 0;
     }
 
     /**
@@ -273,7 +279,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         if ($identifier === null) {
             throw new \Exception(sprintf('Identifier %s not found', $identifier));
         }
-        return $this->getDriver()->read($identifier);
+        return $this->getAdapter()->read($identifier);
     }
 
     /**
@@ -322,7 +328,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         }
         $tempFileWriteStream = fopen($temporaryPath, 'w');
         // todo: replace with thumbnail content, its not necessary to work on full orig. file
-        $file = $this->getDriver()->read($identifier);
+        $file = $this->getAdapter()->read($identifier);
         if ($tempFileWriteStream === false) {
             throw new \Exception(sprintf('Unable to open temporary file %s', $temporaryPath));
         }
@@ -386,9 +392,9 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         if ($prn === null) {
             throw new \Exception(sprintf('Identifier %s not found', $fileIdentifier));
         }
-        $asset = $this->getDriver()->getFile($prn);
+        $asset = $this->getAdapter()->getFile($prn);
         $combinedDirectoryIdentifier = implode(',', array_map(
-            fn (Directory $directory) => $directory->getIdentifier(),
+            fn(Directory $directory) => $directory->getIdentifier(),
             $asset->getParentOfIdentifier()->toArray()
         ));
         $extension = array_reverse(explode('.', $asset->getFileName()))[0];
@@ -424,7 +430,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
                 'storage' => $this->storageUid
             ];
         }
-        $directory = $this->getDriver()->getDirectory($identifier);
+        $directory = $this->getAdapter()->getDirectory($identifier);
         if ($directory === null) {
             throw new \Exception(sprintf('Directory for Identifier %s not found', $identifier));
         }
@@ -452,7 +458,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         if ($identifier === null) {
             throw new \Exception(sprintf('Identifier %s not found', $identifier));
         }
-        $folderWithAssets = $this->getDriver()->getClient()->folders()->getFolderAssets($identifier);
+        $folderWithAssets = $this->getAdapter()->getClient()->folders()->getFolderAssets($identifier);
         if ($folderWithAssets === null) {
             return '';
         }
@@ -484,7 +490,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         if ($identifier === null) {
             throw new \Exception(sprintf('Identifier %s not found', $identifier));
         }
-        $folderWithAssets = $this->getDriver()->getClient()->folders()->getFolderAssets($identifier);
+        $folderWithAssets = $this->getAdapter()->getClient()->folders()->getFolderAssets($identifier);
         if ($folderWithAssets === null) {
             return [];
         }
@@ -518,7 +524,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
      */
     public function getFoldersInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = false, array $folderNameFilterCallbacks = [], $sort = '', $sortRev = false): array
     {
-        $folders = $this->getDriver()->listDirectory($this->getIdentifier($folderIdentifier, FileType::DIRECTORY), $recursive);
+        $folders = $this->getAdapter()->listDirectory($this->getIdentifier($folderIdentifier, FileType::DIRECTORY), $recursive);
         $directories = [];
         /** @var Directory $folder */
         foreach ($folders as $folder) {
@@ -540,7 +546,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         if ($identifier === null) {
             return 0;
         }
-        $assets = $this->getDriver()->getClient()
+        $assets = $this->getAdapter()->getClient()
             ->folders()
             ->getFolderAssets($identifier);
         if ($assets === null) {
@@ -559,7 +565,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
     public function countFoldersInFolder($folderIdentifier, $recursive = false, array $folderNameFilterCallbacks = []): int
     {
         // todo: recursive and filter is missing
-        $directories = $this->getDriver()->listDirectory($this->getIdentifier($folderIdentifier, FileType::DIRECTORY));
+        $directories = $this->getAdapter()->listDirectory($this->getIdentifier($folderIdentifier, FileType::DIRECTORY));
         return $directories->count();
     }
 
@@ -598,7 +604,7 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
         if ($prn === null) {
             return [];
         }
-        return $this->getDriver()->getMetadata($prn);
+        return $this->getAdapter()->getMetadata($prn);
     }
 
     public function getIdentifier(string $identifier, string $fileType): ?string
@@ -618,15 +624,19 @@ class PixelboxxDriver extends AbstractHierarchicalFilesystemDriver implements St
             return null;
         }
         if ($fileType === FileType::DIRECTORY) {
-            return (string)PixelboxxResourceName::prnFromResource($this->getDriver()->getClient(), PixelboxxResourceName::FOLDER, $newIdentifier);
+            return (string)PixelboxxResourceName::prnFromResource($this->getAdapter()->getClient(), PixelboxxResourceName::FOLDER, $newIdentifier);
         }
-        return (string)PixelboxxResourceName::prnFromResource($this->getDriver()->getClient(), PixelboxxResourceName::ASSET, $newIdentifier);
+        return (string)PixelboxxResourceName::prnFromResource($this->getAdapter()->getClient(), PixelboxxResourceName::ASSET, $newIdentifier);
     }
 
-    private function getDriver(): Driver
+    /**
+     * @return Adapter
+     * @throws \Exception
+     */
+    private function getAdapter(): Adapter
     {
         if ($this->driver === null) {
-            throw new \Exception('Driver has not been initialized, did you all the initialize() method?');
+            throw new \Exception('Adapter has not been initialized, did you all the initialize() method?');
         }
         return $this->driver;
     }

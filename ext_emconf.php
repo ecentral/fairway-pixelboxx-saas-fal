@@ -11,11 +11,11 @@ $EM_CONF['canto_saas_fal'] = [
     'title' => 'Pixelboxx SaaS FAL',
     'description' => 'Adds Pixelboxx SaaS FAL driver.',
     'category' => 'misc',
-    'version' => '0.2.0',
+    'version' => '2.0.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '10.4.0-11.9.99',
-            'filemetadata' => '10.4.0-11.9.99',
+            'typo3' => '12.4.0-12.9.99',
+            'filemetadata' => '12.4.0-12.9.99',
         ],
     ],
     'state' => 'beta',

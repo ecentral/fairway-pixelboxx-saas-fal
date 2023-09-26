@@ -7,6 +7,8 @@
  * LICENSE file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['registeredDrivers'][\Fairway\PixelboxxSaasFal\Driver\PixelboxxDriver::DRIVER_NAME] = [
     'class' => \Fairway\PixelboxxSaasFal\Driver\PixelboxxDriver::class,
     'shortName' => \Fairway\PixelboxxSaasFal\Driver\PixelboxxDriver::DRIVER_NAME,
@@ -24,10 +26,17 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['processors']['PixelboxxFileProcessor'
 \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Index\ExtractorRegistry::class)
     ->registerExtractionService(\Fairway\PixelboxxSaasFal\Extractor\PixelboxxFileExtractor::class);
 
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1628070217] = [
-    'nodeName' => 'inline',
-    'priority' => 100,
-    'class' => \Fairway\PixelboxxSaasFal\Form\Container\InlineControlContainer::class,
-];
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ElementBrowsers']['pixelboxx'] = \Fairway\PixelboxxSaasFal\Browser\PixelboxxAssetBrowser::class;
+if (\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Information\Typo3Version::class)->getMajorVersion() < 12) {
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1628070217] = [
+        'nodeName' => 'inline',
+        'priority' => 100,
+        'class' => \Fairway\PixelboxxSaasFal\Form\Container\InlineControlContainer::class,
+    ];/**/
+} else {
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1628070217] = [
+        'nodeName' => \TYPO3\CMS\Backend\Form\Container\FilesControlContainer::NODE_TYPE_IDENTIFIER,
+        'priority' => 100,
+        'class' => \Fairway\PixelboxxSaasFal\Form\Container\FileControlContainer::class,
+    ];
+}
