@@ -38,5 +38,6 @@ jobs:
       - name: Run grumphp
         if: matrix.php != '8.1'
         run: php .Build/bin/grumphp run --no-interaction
-      - name: Run phpstan
-        run: composer phpstan
+      - name: Run phpstan 
+        if: matrix.php != '8.1'
+        run: php .Build/bin/phpstan
